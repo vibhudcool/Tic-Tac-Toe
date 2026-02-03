@@ -16,6 +16,21 @@ const winPatterns = [
         [0,4,8],
         [2,4,6]
 ];
+const random = () =>{
+        let emptybox = [];
+        box.forEach((box)=>{
+                if(box.innerText === ""){
+                        emptybox.push(box);
+                }
+        });
+        if(emptybox.length === 0){
+                return;
+        }
+        let num = Math.floor(Math.random() * emptybox.length);
+        let randombox = emptybox[num];
+        randombox.innerText = "O";
+        randombox.disabled = true;
+}
 const resetgame = () =>{
         turn0 = true;
         enableBoxes();
@@ -24,20 +39,21 @@ const resetgame = () =>{
 }
 box.forEach((box) => {
         box.addEventListener("click", ()=>{
-                if(turn0){
-                        box.innerText = "O";
-                        turn0 = false;
-                }else{
-                        box.innerText = "X";
-                        turn0 = true;                     
-                }
-                count++;
-                box.disabled = true;
-                let isWinner = checkWinner();
-                if(count === 9 && !isWinner){
-                        gameDraw();
-                }
-
+                        box.innerText = "X";                   
+                        box.disabled = true;
+                        count++;
+                        let isWinner = checkWinner();
+                        if(count === 9 && !isWinner){
+                                gameDraw();
+                        }
+                        setTimeout(()=>{
+                        random();
+                        count++;
+                        isWinner = checkWinner();
+                        if(count === 9 && !isWinner){
+                                gameDraw();
+                        }
+                },200);
         }) 
 });
 const gameDraw = () =>{
@@ -57,7 +73,12 @@ const enableBoxes = () =>{
         }
 }
 const showWinner = (winner) =>{
-        msg.innerText = `Congratulations!!, Winner is ${winner}`;
+        if(winner === "X"){
+                msg.innerText = "Congratulations!!, You are winner";
+        }
+        else if(winner === "O"){
+                msg.innerText = "Try Again!, Computer is Winner";
+        }
         msg_container.classList.remove("hide");
 } 
 const checkWinner = () =>{
@@ -73,6 +94,7 @@ const checkWinner = () =>{
                         }   
                 }
         }
+        return false;
 };
 new_btn.addEventListener("click",resetgame);
 resetbtn.addEventListener("click",resetgame);
